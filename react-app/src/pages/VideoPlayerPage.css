@@ -1,0 +1,465 @@
+.video-player-page {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+}
+
+.page-header p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.video-controls {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.format-selector {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.format-selector label {
+  font-weight: 600;
+  color: #333;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+}
+
+.radio-option span {
+  color: #555;
+  font-size: 1rem;
+}
+
+.video-container {
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
+}
+
+.video-player-container {
+  width: 100%;
+}
+
+.video-title {
+  color: #fff;
+  text-align: center;
+  padding: 15px 20px;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 1.3rem;
+}
+
+.video-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.info-section,
+.features-section {
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #667eea;
+}
+
+.info-section h3,
+.features-section h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+.format-details h4 {
+  color: #667eea;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.format-details ul,
+.features-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.format-details li,
+.features-section li {
+  padding: 8px 0;
+  color: #555;
+  border-bottom: 1px solid #eee;
+}
+
+.format-details li:last-child,
+.features-section li:last-child {
+  border-bottom: none;
+}
+
+.features-section li {
+  font-size: 1rem;
+}
+
+/* Video.js customizations */
+.video-js {
+  width: 100% !important;
+  height: auto !important;
+}
+
+.video-js .vjs-big-play-button {
+  font-size: 3em;
+  line-height: 1.5em;
+  height: 1.5em;
+  width: 3em;
+  border-radius: 50%;
+  background-color: rgba(43, 51, 63, 0.8);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.video-js .vjs-big-play-button:hover {
+  background-color: rgba(43, 51, 63, 0.9);
+  transform: scale(1.1);
+}
+
+/* Simple Video.js control bar customization */
+.video-js .vjs-control-bar {
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+  padding: 6px 8px !important;
+  display: flex !important;
+  /* flex-direction: column !important;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+  padding: 6px 8px; */
+}
+
+/* Seek buttons styling */
+.vjs-seek-buttons .vjs-seek-backward-button,
+.vjs-seek-buttons .vjs-seek-forward-button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+  color: white !important;
+  padding: 6px 8px !important;
+  margin: 0 2px !important;
+  font-size: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.vjs-seek-buttons .vjs-seek-backward-button:hover,
+.vjs-seek-buttons .vjs-seek-forward-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Current chapter title overlay */
+.current-chapter-overlay {
+  position: absolute;
+  bottom: 52px; /* sits above control bar */
+  left: 12px;
+
+  display: inline-flex;         /* shrink-wrap to content */
+  align-items: center;
+  gap: 8px;
+
+  max-width: 80%;               /* safety: prevent overflow */
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+
+  background: rgba(0, 0, 0, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  z-index: 10;
+
+  pointer-events: none;         /* don't block clicks */
+  white-space: nowrap;          /* single-line */
+}
+
+
+.chapter-indicator {
+  color: #1976d2;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.chapter-title-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .video-player-page {
+    padding: 10px;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .page-header p {
+    font-size: 1rem;
+  }
+  
+  .video-info {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .format-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .info-section,
+  .features-section {
+    padding: 20px;
+  }
+
+  /* Mobile video controls adjustments */
+  /* .video-js .vjs-control-bar {
+    padding: 6px 8px !important;
+  } */
+  
+  /* .video-js .vjs-control-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+    padding: 6px 8px;
+  } */
+  
+  /* Progress control on top */
+  .video-js .vjs-progress-control {
+    order: 0;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  /* All other buttons go after the progress bar */
+  .video-js .vjs-play-control,
+  .video-js .vjs-volume-panel,
+  .video-js .vjs-current-time,
+  .video-js .vjs-time-divider,
+  .video-js .vjs-duration,
+  .video-js .vjs-playback-rate,
+  .video-js .vjs-seek-buttons,
+  .video-js .vjs-fullscreen-control {
+    order: 1;
+    margin: 4px;
+  }
+  
+  
+  .vjs-seek-buttons {
+    margin-right: 6px !important;
+  }
+
+  .vjs-seek-buttons .vjs-seek-backward-button,
+  .vjs-seek-buttons .vjs-seek-forward-button {
+    padding: 4px 6px !important;
+    font-size: 11px !important;
+    height: 24px !important;
+  }
+
+  .video-js .vjs-fullscreen-control {
+    height: 28px !important;
+  }
+
+  /* Mobile chapter overlay adjustments */
+  /* .current-chapter-overlay {
+    bottom: 40px !important;
+    left: 8px !important;
+    right: 8px !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+  } */
+
+  .chapter-indicator {
+    font-size: 14px !important;
+  }
+}
+
+/* Chapters styling */
+.chapters-list {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chapters-list h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 8px;
+}
+
+.chapters-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chapter-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 15px;
+  margin: 8px 0;
+  background: #f8f9fa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid #667eea;
+}
+
+.chapter-item:hover {
+  background: #e9ecef;
+  transform: translateX(5px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-time {
+  font-weight: 600;
+  color: #667eea;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.chapter-title {
+  font-weight: 500;
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 4px;
+}
+
+.chapter-description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Video.js markers styling */
+.vjs-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vjs-marker:hover {
+  transform: scaleX(1.5);
+}
+
+.vjs-tip {
+  position: absolute;
+  bottom: 25px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .chapters-list {
+    margin-top: 15px;
+    padding: 15px;
+  }
+  
+  .chapter-item {
+    padding: 10px 12px;
+  }
+  
+  .chapter-title {
+    font-size: 1rem;
+  }
+  
+  .chapter-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-player-page {
+    padding: 5px;
+  }
+  
+  .video-controls {
+    padding: 15px;
+  }
+  
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .chapters-list {
+    padding: 12px;
+  }
+  
+  .chapter-item {
+    padding: 8px 10px;
+  }
+  
+  .chapter-item:hover {
+    transform: none;
+  }
+}
