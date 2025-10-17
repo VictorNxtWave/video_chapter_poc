@@ -16,7 +16,8 @@ const VideoPlayer = ({
   controls = true,
   autoplay = false,
   preload = "metadata",
-  chapters = []
+  chapters = [],
+  captions = []
 }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -39,17 +40,15 @@ const VideoPlayer = ({
         playbackRates: [0.5, 1, 1.25, 1.5, 2]
       });
 
+      // Set sources first
+      if (sources && sources.length > 0) {
+        playerRef.current.src(sources);
+      }
+
       // Initialize plugins after player is ready
       playerRef.current.ready(() => {
         console.log('Video.js player is ready');
-        
-        // Add seek buttons
-        if (playerRef.current.seekButtons) {
-          playerRef.current.seekButtons({
-            forward: 10,
-            back: 10
-          });
-        }
+
 
         // Add chapter markers
         if (chapters && chapters.length > 0 && playerRef.current.markers) {
@@ -78,12 +77,21 @@ const VideoPlayer = ({
 
           console.log('Chapter markers added:', chapters.length);
         }
-      });
 
-      // Set sources
-      if (sources && sources.length > 0) {
-        playerRef.current.src(sources);
-      }
+        // Add captions/subtitles
+        if (captions && captions.length > 0) {
+          captions.forEach((caption, index) => {
+            playerRef.current.addRemoteTextTrack({
+              kind: caption.kind || 'subtitles',
+              src: caption.src,
+              srclang: caption.srclang,
+              label: caption.label,
+              default: caption.default || index === 0
+            }, false);
+          });
+          console.log('Captions added:', captions.length);
+        }
+      });
 
       // Track current chapter based on time
       const updateCurrentChapter = () => {
@@ -127,7 +135,7 @@ const VideoPlayer = ({
         playerRef.current = null;
       }
     };
-  }, [sources, poster, controls, autoplay, preload, width, height, chapters]);
+  }, [sources, poster, controls, autoplay, preload, width, height, chapters, captions]);
 
   // Update sources when they change
   useEffect(() => {
@@ -135,13 +143,6 @@ const VideoPlayer = ({
       playerRef.current.src(sources);
     }
   }, [sources]);
-
-  const handleChapterClick = (time) => {
-    if (playerRef.current) {
-      playerRef.current.currentTime(time);
-      playerRef.current.play();
-    }
-  };
 
   return (
     <div className="video-player-container">
@@ -165,34 +166,11 @@ const VideoPlayer = ({
         {/* Chapter title overlay */}
         {currentChapter && (
           <div className="current-chapter-overlay">
-            <span className="chapter-indicator">•</span>
+            {/* <span className="chapter-indicator">\</span> */}
             <span className="chapter-title-text">{currentChapter.title}</span>
           </div>
         )}
       </div>
-      
-      {chapters && chapters.length > 0 && (
-        <div className="chapters-list">
-          <h3>Chapters</h3>
-          <ul>
-            {chapters.map((chapter, index) => (
-              <li 
-                key={index} 
-                className="chapter-item"
-                onClick={() => handleChapterClick(chapter.time)}
-              >
-                <span className="chapter-time">
-                  {Math.floor(chapter.time / 60)}:{(chapter.time % 60).toString().padStart(2, '0')}
-                </span>
-                <span className="chapter-title">{chapter.title}</span>
-                {chapter.description && (
-                  <span className="chapter-description">{chapter.description}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };

@@ -62,6 +62,23 @@ const VideoPlayerPage = () => {
     }
   ];
 
+  // Sample captions/subtitles (WebVTT format)
+  const videoCaptions = [
+    {
+      kind: 'subtitles',
+      src: '/captions-en.vtt',
+      srclang: 'en',
+      label: 'English',
+      default: true
+    },
+    {
+      kind: 'subtitles',
+      src: '/captions-es.vtt',
+      srclang: 'es',
+      label: 'Spanish'
+    }
+  ];
+
   const handleVideoTypeChange = (type) => {
     setSelectedVideo(type);
   };
@@ -113,53 +130,8 @@ const VideoPlayerPage = () => {
           autoplay={false}
           preload="metadata"
           chapters={videoChapters}
+          captions={videoCaptions}
         />
-      </div>
-
-      <div className="video-info">
-        <div className="info-section">
-          <h3>Current Format: {selectedVideo.toUpperCase()}</h3>
-          <div className="format-details">
-            {selectedVideo === 'hls' && (
-              <div>
-                <h4>HLS (HTTP Live Streaming)</h4>
-                <ul>
-                  <li>File extension: .m3u8</li>
-                  <li>MIME type: application/x-mpegURL</li>
-                  <li>Developed by Apple</li>
-                  <li>Widely supported on mobile devices</li>
-                  <li>Adaptive bitrate streaming</li>
-                </ul>
-              </div>
-            )}
-            {selectedVideo === 'mpd' && (
-              <div>
-                <h4>DASH (Dynamic Adaptive Streaming over HTTP)</h4>
-                <ul>
-                  <li>File extension: .mpd</li>
-                  <li>MIME type: application/dash+xml</li>
-                  <li>ISO standard (MPEG-DASH)</li>
-                  <li>Platform agnostic</li>
-                  <li>Advanced adaptive streaming features</li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="features-section">
-          <h3>Video.js Features Enabled</h3>
-          <ul>
-            <li>✅ Adaptive quality selection</li>
-            <li>✅ Native keyboard controls (Space, Arrow keys)</li>
-            <li>✅ Seek buttons (+/- 10 seconds)</li>
-            <li>✅ Playback speed controls</li>
-            <li>✅ Video chapters with timeline markers</li>
-            <li>✅ Interactive chapter navigation</li>
-            <li>✅ Responsive design</li>
-            <li>✅ Mobile-friendly controls</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
