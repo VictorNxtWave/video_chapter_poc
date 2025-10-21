@@ -7,6 +7,48 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-seek-buttons';
 import 'videojs-markers-plugin';
 
+// Utility function to convert SRT to VTT format
+const convertSrtToVtt = (srtContent) => {
+  // Remove BOM if present
+  srtContent = srtContent.replace(/^\uFEFF/, '');
+  
+  // Convert SRT timestamps to VTT format (replace commas with dots)
+  let vttContent = srtContent.replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2');
+  
+  // Remove sequence numbers (lines that are just numbers)
+  vttContent = vttContent.replace(/^\d+\s*\n/gm, '');
+  
+  // Clean up extra blank lines
+  vttContent = vttContent.replace(/\n{3,}/g, '\n\n');
+  
+  // Add WEBVTT header
+  vttContent = 'WEBVTT\n\n' + vttContent.trim();
+  
+  return vttContent;
+};
+
+// Function to fetch and convert SRT file to VTT
+const fetchAndConvertSrt = async (url) => {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch SRT file: ${response.statusText}`);
+    }
+    
+    const srtContent = await response.text();
+    const vttContent = convertSrtToVtt(srtContent);
+    
+    // Create a blob from the VTT content
+    const blob = new Blob([vttContent], { type: 'text/vtt' });
+    const blobUrl = URL.createObjectURL(blob);
+    
+    return blobUrl;
+  } catch (error) {
+    console.error('Error converting SRT to VTT:', error);
+    return null;
+  }
+};
+
 const VideoPlayer = ({ 
   sources, 
   poster, 
@@ -21,6 +63,7 @@ const VideoPlayer = ({
 }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
+  const blobUrlsRef = useRef([]); 
   const [currentChapter, setCurrentChapter] = useState(null);
 
   useEffect(() => {
@@ -78,18 +121,42 @@ const VideoPlayer = ({
           console.log('Chapter markers added:', chapters.length);
         }
 
-        // Add captions/subtitles
+        // Add captions/subtitles (with SRT support)
         if (captions && captions.length > 0) {
-          captions.forEach((caption, index) => {
-            playerRef.current.addRemoteTextTrack({
-              kind: caption.kind || 'subtitles',
-              src: caption.src,
-              srclang: caption.srclang,
-              label: caption.label,
-              default: caption.default || index === 0
-            }, false);
-          });
-          console.log('Captions added:', captions.length);
+          // Process captions sequentially to handle async conversion
+          const loadCaptions = async () => {
+            for (let index = 0; index < captions.length; index++) {
+              const caption = captions[index];
+              let captionSrc = caption.src;
+              
+              
+              console.log(`Converting SRT to VTT: ${caption.label}`);
+              // Convert SRT to VTT
+              const vttBlobUrl = await fetchAndConvertSrt(caption.src);
+              if (vttBlobUrl) {
+                captionSrc = vttBlobUrl;
+                // Track blob URL for cleanup
+                blobUrlsRef.current.push(vttBlobUrl);
+                console.log(`SRT converted successfully: ${caption.label}`);
+              } else {
+                console.error(`Failed to convert SRT: ${caption.label}`);
+                continue; // Skip this caption if conversion failed
+              }
+              
+              if (playerRef.current) {
+                playerRef.current.addRemoteTextTrack({
+                  kind: caption.kind || 'subtitles',
+                  src: captionSrc,
+                  srclang: caption.srclang,
+                  label: caption.label,
+                  default: caption.default || index === 0
+                }, false);
+              }
+            }
+            console.log('Captions added:', captions.length);
+          };
+          
+          loadCaptions();
         }
       });
 
@@ -134,6 +201,12 @@ const VideoPlayer = ({
         playerRef.current.dispose();
         playerRef.current = null;
       }
+      
+      // Revoke blob URLs to free memory
+      blobUrlsRef.current.forEach(url => {
+        URL.revokeObjectURL(url);
+      });
+      blobUrlsRef.current = [];
     };
   }, [sources, poster, controls, autoplay, preload, width, height, chapters, captions]);
 

@@ -66,14 +66,14 @@ const VideoPlayerPage = () => {
   const videoCaptions = [
     {
       kind: 'subtitles',
-      src: '/captions-en.vtt',
+      src: 'https://nkb-backend-ccbp-media-static.s3.amazonaws.com/ccbp_prod/media/transcripts/baab8c69-b6fb-43e9-97fe-94128b0de480_transcript.srt',
       srclang: 'en',
       label: 'English',
       default: true
     },
     {
       kind: 'subtitles',
-      src: '/captions-es.vtt',
+      src: 'https://nkb-backend-ccbp-media-static.s3.amazonaws.com/ccbp_prod/media/transcripts/baab8c69-b6fb-43e9-97fe-94128b0de480_transcript.srt',
       srclang: 'es',
       label: 'Spanish'
     }
